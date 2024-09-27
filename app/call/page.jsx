@@ -1,22 +1,44 @@
 "use client";
-import React from "react";
-import { getGroqChatCompletion } from "./func";
+import { useState, useEffect } from 'react';
 
-function call() {
-  const [text, setText] = React.useState([]);
+const SpeechToText = () => {
+  const [text, setText] = useState('');
+  const [listening, setListening] = useState(false);
 
-  const fun = () => {
-    // console.log("first");
-    setText(getGroqChatCompletion());
-  };
+  useEffect(() => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0])
+        .map((result) => result.transcript)
+        .join('');
+      setText(transcript);
+    };
+
+    if (listening) {
+      recognition.start();
+    } else {
+      recognition.stop();
+    }
+
+    return () => {
+      recognition.stop();
+    };
+  }, [listening]);
 
   return (
     <div>
-      <button onClick={() => fun()}> click me</button>
-      <h1 className="">{text.toString()}</h1>
-      {console.log(text)}
+      <button onClick={() => setListening(!listening)}>
+        {listening ? 'Stop Listening' : 'Start Listening'}
+      </button>
+      <p>{text}</p>
     </div>
   );
-}
+};
 
-export default call;
+export default SpeechToText;
