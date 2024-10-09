@@ -1,16 +1,15 @@
-# whisper_server.py
-from fastapi import FastAPI, UploadFile, File
-import whisper
+# Importing flask module in the project is mandatory
+# An object of Flask class is our WSGI application.
+from flask import Flask
+from clerkData import clerkData
 
-app = FastAPI()
-model = whisper.load_model("base")
 
-@app.post("/transcribe")
-async def transcribe(file: UploadFile = File(...)):
-    audio = await file.read()
-    with open("temp.mp3", "wb") as f:
-        f.write(audio)
+app = Flask(__name__)
 
-    # Perform the transcription
-    result = model.transcribe("temp.mp3")
-    return {"transcription": result["text"]}
+clerkData(app)
+@app.route('/')
+def hello_world():
+    return 'Hello World'
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0',port=5000)

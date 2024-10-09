@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { BackgroundLines } from "@/components/ui/background-lines";
-import { FlipWords } from "@/components/ui/flip-words";
-import { LampContainer } from "@/components/ui/lamp";
+import { BackgroundLines } from "/home/kunal/Documents/CognitiveBerg/components/ui/background-lines";
+import { FlipWords } from "/home/kunal/Documents/CognitiveBerg/components/ui/flip-words";
+import { LampContainer } from "/home/kunal/Documents/CognitiveBerg/components/ui/lamp.jsx";
 import { motion } from "framer-motion";
 import { UserButton } from "@clerk/nextjs";
 
