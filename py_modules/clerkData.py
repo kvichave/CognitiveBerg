@@ -4,7 +4,15 @@ import json
 def clerkData(app):
     
 
-    @app.route("/api/clerk", methods=["POST", "GET"])
+
+
+    # @app.route("/api/webhooks",methods=["POST","GET"])
+    # def getData():
+    #     data=request.get_json()
+    #     print("this is webhook",type(data))
+    #     return "success"
+
+    @app.route("/api/webhooks", methods=["POST", "GET"])
     def clerk():
         data=request.get_json()
         clerkId,clerkName,clerkEmail,requestType=extractClerk(data)
@@ -39,21 +47,26 @@ def clerkData(app):
     
 
 def extractClerk(data):
+    requestType=data['type']
 
-    newdata=json.loads(data['data'])
-    requestType=newdata['type']
     if requestType == "user.deleted":
-        clerkId=newdata['data']['id']
-        clerkName="NA"
-        clerkEmail="NA"
-        return(clerkId,clerkName,clerkEmail,requestType)
-    clerkId=newdata['data']['id']
-    clerkName=newdata['data']['first_name']
-    clerkEmail=newdata['data']['email_addresses'][0]['email_address']
+            clerkId=data['data']['id']
+            clerkName="NA"
+            clerkEmail="NA"
+            return(clerkId,clerkName,clerkEmail,requestType)
+    clerkId=data['data']['id']
+
+    clerkName=data['data']['first_name']
+    clerkEmail=data['data']['email_addresses'][0]['email_address']
     return (clerkId,clerkName,clerkEmail,requestType)
+
 
 
 def get_db_connection():
     conn = sqlite3.connect('/home/kunal/Documents/CognitiveBerg/clerkData.db')
     conn.row_factory = sqlite3.Row  # Allows us to return rows as dictionaries
     return conn
+
+
+
+
