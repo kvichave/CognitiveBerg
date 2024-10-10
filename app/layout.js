@@ -14,11 +14,11 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <SignedOut>
+          {/* <SignedOut>
             <SignIn routing="hash"></SignIn>
-          </SignedOut>
+          </SignedOut> */}
 
-          <SignedIn> {children}</SignedIn>
+          {children}
         </body>
       </html>
     </ClerkProvider>

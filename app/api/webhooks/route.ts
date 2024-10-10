@@ -54,12 +54,12 @@ export async function POST(req: Request) {
   const eventType = evt.type;
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   console.log("Webhook body:", body);
-  sendClerkData(body);
+  sendClerkData(body, eventType);
 
   return new Response("", { status: 200 });
 }
 
-async function sendClerkData(data) {
+async function sendClerkData(data, eventType) {
   try {
     const response = await fetch("http://192.168.31.184:5000/api/clerk", {
       // Change the endpoint as needed
@@ -67,7 +67,7 @@ async function sendClerkData(data) {
       headers: {
         "Content-Type": "application/json", // Set the content type to JSON
       },
-      body: JSON.stringify({ data }), // Convert data to JSON format
+      body: JSON.stringify({ data, eventType }), // Convert data to JSON format
     });
 
     // Check if the response is ok

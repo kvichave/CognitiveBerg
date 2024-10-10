@@ -5,7 +5,7 @@ import { BackgroundLines } from "/home/kunal/Documents/CognitiveBerg/components/
 import { FlipWords } from "/home/kunal/Documents/CognitiveBerg/components/ui/flip-words";
 import { LampContainer } from "/home/kunal/Documents/CognitiveBerg/components/ui/lamp.jsx";
 import { motion } from "framer-motion";
-import { UserButton } from "@clerk/nextjs";
+import { SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const words = [
@@ -45,28 +45,37 @@ export default function Home() {
           improve them in <FlipWords words={words} />
         </div>
       </div>
-      <LampContainer>
-        <motion.h1
-          initial={{ opacity: 0.5, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.3,
-            duration: 0.8,
-            ease: "easeInOut",
-          }}
-          className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
-        >
-          Let's Begin <br /> Signup
-          <div class="text-lg mt-8 items-center justify-center">
-            <button className="px-4 py-1 rounded-l-xl shadow-lg  text-white m-0 bg-blue-500 hover:bg-blue-900 transition">
-              Login
-            </button>
-            <button className="px-2 py-1  text-black rounded-r-xl bg-white hover:bg-blue-900 transition">
-              Register
-            </button>
-          </div>
-        </motion.h1>
-      </LampContainer>
+
+      <SignedOut>
+        <LampContainer>
+          <motion.h1
+            initial={{ opacity: 0.5, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.3,
+              duration: 0.8,
+              ease: "easeInOut",
+            }}
+            className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+          >
+            Let's Begin <br /> Signup
+            <div class="text-xl mt-8 items-center justify-center">
+              <button
+                onClick={() => router.push("/auth/sign-up")}
+                className="px-4 mr-4 py-1 rounded-lg shadow-lg  text-white  bg-blue-500 hover:bg-blue-900 transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => router.push("/auth/sign-in")}
+                className="px-2 py-1 ml-4 text-slate-700 rounded-lg bg-white  transition"
+              >
+                Register
+              </button>
+            </div>
+          </motion.h1>
+        </LampContainer>
+      </SignedOut>
     </>
   );
 }
