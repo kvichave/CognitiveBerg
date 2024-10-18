@@ -1,53 +1,60 @@
 import sqlite3
-from flask import Flask,request
+from flask import Flask,request,session,Blueprint
 import json
-def clerkData(app):
-    
-
-
-
     # @app.route("/api/webhooks",methods=["POST","GET"])
     # def getData():
     #     data=request.get_json()
     #     print("this is webhook",type(data))
     #     return "success"
-
-    @app.route("/api/webhooks", methods=["POST", "GET"])
-    def clerk():
-        data=request.get_json()
-        clerkId,clerkName,clerkEmail,requestType=extractClerk(data)
-        conn = get_db_connection()
-        if requestType == "user.created":
-            cursor = conn.execute('SELECT * FROM clerk WHERE clerk_id = ? OR email = ?', (clerkId, clerkEmail))
-            existing_user = cursor.fetchone()
-
-            if existing_user:
-                print("User already exists. No new user created.")
-            else:
-                conn.execute('INSERT INTO clerk (name, email, clerk_id) VALUES (?, ?, ?)', (clerkName, clerkEmail, clerkId))
-                conn.commit()
-                print("User created")
-
-        elif requestType == "user.deleted":
-            # Delete user from the database using clerk_id
-            conn.execute('DELETE FROM clerk WHERE clerk_id = ?', (clerkId,))
-            conn.commit()
-            print("User deleted")
-
-        elif requestType == "user.updated":
-            # Update user information in the database using clerk_id
-            conn.execute('UPDATE clerk SET name = ?, email = ? WHERE clerk_id = ?', (clerkName, clerkEmail, clerkId))
-            conn.commit()
-            print("User updated")
-
-        
-        conn.close()
-        print(clerkName,clerkEmail,clerkId,requestType)
-        return("Success")
+clerk_db=Blueprint('clerk_db',__name__)
+@clerk_db.route("/api/webhooks", methods=["POST", "GET"])
+def clerk():
+    data=request.get_json()
+    # print("data",data)
+    clerkId,clerkName,clerkEmail,requestType=extractClerk(data)
+    conn = get_db_connection()
     
+    if requestType == "user.created":
+        cursor = conn.execute('SELECT * FROM clerk WHERE clerk_id = ? OR email = ?', (clerkId, clerkEmail))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            print("User already exists. No new user created.")
+        else:
+            conn.execute('INSERT INTO clerk (name, email, clerk_id) VALUES (?, ?, ?)', (clerkName, clerkEmail, clerkId))
+            conn.commit()
+            print("User created")
+
+    elif requestType == "user.deleted":
+        # Delete user from the database using clerk_id
+        conn.execute('DELETE FROM clerk WHERE clerk_id = ?', (clerkId,))
+        conn.commit()
+        print("User deleted")
+
+    elif requestType == "user.updated":
+        # Update user information in the database using clerk_id
+        conn.execute('UPDATE clerk SET name = ?, email = ? WHERE clerk_id = ?', (clerkName, clerkEmail, clerkId))
+        conn.commit()
+        print("User updated")
+
+    elif requestType == "session.created":
+        session['clerkId'] = clerkId
+        print("session ::::::::" ,session.get('clerkId'))
+
+
+    conn.close()
+    # print(clerkName,clerkEmail,clerkId,requestType)
+    return("Success")
+
 
 def extractClerk(data):
     requestType=data['type']
+    if requestType == "session.created":
+        clerkId=data['data']['user_id']
+        clerkName="NA"
+        clerkEmail="NA"
+        return(clerkId,clerkName,clerkEmail,requestType)
+
 
     if requestType == "user.deleted":
             clerkId=data['data']['id']

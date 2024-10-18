@@ -1,15 +1,22 @@
 # Importing flask module in the project is mandatory
 # An object of Flask class is our WSGI application.
-from flask import Flask
-from clerkData import clerkData
-
-
+from flask import Flask,session
+from user_profile import user_profile
+from clerkData import clerk_db
+from flask_cors import CORS
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'lanukVichave@258'
+CORS(app)
+app.register_blueprint(user_profile)
+app.register_blueprint(clerk_db)
 
-clerkData(app)
 @app.route('/')
 def hello_world():
+    session["test"]="kunal"
+
     return 'Hello World'
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0',port=5000)
