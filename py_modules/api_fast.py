@@ -3,12 +3,14 @@
 from flask import Flask,session
 from user_profile import user_profile
 from clerkData import clerk_db
+from dashboard import dashboard_functions
 from flask_cors import CORS
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'lanukVichave@258'
-CORS(app)
 app.register_blueprint(user_profile)
 app.register_blueprint(clerk_db)
+app.register_blueprint(dashboard_functions)
+CORS(app)
 
 @app.route('/')
 def hello_world():

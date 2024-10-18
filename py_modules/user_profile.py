@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask,request,session,Blueprint
 import json
 
-user_profile=Blueprint('second',__name__)
+user_profile=Blueprint('user_profile',__name__)
 @user_profile.route("/api/user_profile",methods=["POST","GET"])
 def submit_user_profile():   
     data = request.get_json()  # Get the incoming JSON data
